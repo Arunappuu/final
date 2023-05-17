@@ -1,0 +1,228 @@
+<head>
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="static/style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+    <style>
+        body {
+
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            background-color: #4caf50;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .form-container {
+            display: none;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #e4e4e4;
+            color: #333;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#showFormBtn").click(function () {
+                $(".form-container").toggle();
+                $("#materials").select2();
+            });
+
+            $("#dob").change(function () {
+                var dob = new Date($(this).val());
+                var age = calculateAge(dob);
+                $("#age").val(age);
+            });
+
+            function calculateAge(dob) {
+                var today = new Date();
+                var age = today.getFullYear() - dob.getFullYear();
+                var monthDiff = today.getMonth() - dob.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                    age--;
+                }
+                return age;
+            }
+            $("#department").change(function () {
+                var department = $(this).val();
+                var courses = getCoursesByDepartment(department);
+                populateCoursesDropdown(courses);
+            });
+
+            function getCoursesByDepartment(department) {
+                if (department === "commerce") {
+                    return ["BBA", "BCom", "MCom", "ECom", "Fishery"];
+                } else if (department === "science") {
+                    return ["BSc", "MSc", "PhD", "Software engineering", "Artificial intelligence"];
+                } else if (department === "eng") {
+                    return ["Chemical engineering", "Civil engineering", "Electrical engineering", "Mechanical engineering", "Bioengineering"];
+                } else if (department === "liter") {
+                    return ["Novella", "Short story", "Poetry", "Electronic literature", "Drama"];
+                } else if (department === "his") {
+                    return ["Political", "Military", "Cultural", "Diplomatic", "Economic"];
+                }
+                return [];
+            }
+
+            function populateCoursesDropdown(courses) {
+                var coursesDropdown = $("#courses");
+                coursesDropdown.empty();
+                coursesDropdown.append("<option value=''>Select a course</option>");
+                for (var i = 0; i < courses.length; i++) {
+                    var option = $("<option></option>").attr("value", courses[i]).text(courses[i]);
+                    coursesDropdown.append(option);
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div class="main">
+        <h1>Registration Form</h1>
+        <button id="showFormBtn" class="submit-btn">Show Form</button>
+        <div class="form-container">
+            <form action="" method="post">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="dob">DOB:</label>
+                <input type="date" id="dob" name="dob" required>
+
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required readonly>
+                <label for="gender">Gender:</label>
+
+                <select id="gender" name="gender" required>
+                    <option value="">Select a gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" placeholder="Enter your address" required></textarea>
+
+
+                <label for="department">Department:</label>
+                <select id="department" name="department" required>
+                    <option value="">Select a department</option>
+                    <option value="commerce">Commerce</option>
+                    <option value="science">Computer Science</option>
+                    <option value="eng">Engineering</option>
+                    <option value="liter">Literature</option>
+                    <option value="his">History</option>
+                </select>
+
+                <label for="courses">Courses:</label>
+                <select id="courses" name="courses" required>
+                    <option value="">Select a course</option>
+                </select>
+
+                <label for="purpose">Purpose:</label>
+                <select id="purpose" name="purpose" required>
+                    <option value="enquiry">For Enquiry</option>
+                    <option value="order">Place Order</option>
+                    <option value="return">Return</option>
+                </select>
+
+                <label for="materials">Materials Provided:</label>
+                <select id="materials" name="materials" multiple>
+                    <option value="debit_notebook">Debit Note Book</option>
+                    <option value="pen">Pen</option>
+                    <option value="exam_papers">Text Book</option>
+                    <option value="exam_papers">Exam Papers</option>
+                    <option value="exam_papers">Docume</option>
+                </select>
+
+
+                <div>
+                    <button type="submit" class="submit-btn">Submit</button>
+                    <!-- <button type="button" class="submit-btn">Logout</button> -->
+                </div>
+            </form>
+        </div>
+    </div>
+    {% for msg in messages %}
+			{{msg}}
+			{% endfor %}
+</body>
+
+</html>
